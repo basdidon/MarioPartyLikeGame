@@ -4,115 +4,122 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using Utils.UIElements;
+using System.Linq;
 
-[CreateAssetMenu(menuName ="ScriptableObjects/Board/Graph")]
+[CreateAssetMenu(menuName ="ScriptableObjects/Board/Graph",fileName = "GraphData")]
 public class GraphData : ScriptableObject
 {
-    [field: ReadOnly] public int Id;
-    [field: ReadOnly,SerializeField] public int Idx { get; set; }
-    [field: ReadOnly, SerializeField] public List<NodeData> Nodes { get; set; }
-    [field: SerializeField] public NodeData Node { get; set; }
+    [field: SerializeField] GameObject NodePrefab { get; set; }
+    [SerializeField] List<NodeData> nodes = new();
+    public IReadOnlyList<NodeData> Nodes => nodes;
+
+    public void AddNode(NodeData nodeData)
+    {
+        nodes.Add(nodeData);
+    }
+
+    public void ClearNode()
+    {
+        nodes.Clear();
+    }
 }
 
 [CustomEditor(typeof(GraphData))]
 public class GraphDataCustomEditor : Editor
 {
- 
     public override VisualElement CreateInspectorGUI()
     {
-
-        //var assetTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UiDoc/GraphData.uxml");
         var root = new VisualElement();
 
         if (target is GraphData graphData)
         {
-            var createNodeBtn = new Button() { text = "Create Node"};
-            var listField = ListUiElement.DrawListUiElement(nameof(graphData.Nodes),graphData.Nodes);
+            var scriptField = Layout.DrawDefaultScriptObjectField(graphData);
 
-            //listField.SetEnabled(false);
-            root.Add(createNodeBtn);
-            root.Add(listField);
+            var btnGroup = new VisualElement();
+            btnGroup.style.flexDirection = FlexDirection.Row;
 
+            var createNodeBtn = new Button() { text = "Create Node" };
+            createNodeBtn.style.flexGrow = 1;
+            var clearNodesBtn = new Button() { text = "Clear Node" };
+            clearNodesBtn.style.flexGrow = 1;
+
+
+            var nodePrefabOF = new ObjectField("NodePrefab")
+            {
+                bindingPath = "NodePrefab"
+            };
+
+            nodePrefabOF.RegisterValueChangedCallback(evt=> {
+                //serializedObject.FindProperty("NodePrefab").objectReferenceValue = evt.newValue;
+            });
+            //var of = (ObjectField)nodePrefabOF.ElementAt(0);
+            //of.allowSceneObjects = false;
+            var nodesListField = new PropertyField(serializedObject.FindProperty("nodes"));
+            nodesListField.SetEnabled(false);
+
+            root.Add(scriptField);
+            btnGroup.Add(createNodeBtn);
+            btnGroup.Add(clearNodesBtn);
+            root.Add(btnGroup);
+            root.Add(nodePrefabOF);
+
+            root.Add(nodesListField);
+            
             createNodeBtn.clicked += OnCreateNode;
+            clearNodesBtn.clicked += OnClearNodes;
+
         }
 
         return root;
-        /*
-        var container = new VisualElement();
-        container.Add(base.CreateInspectorGUI());
-        /*
-        if (target is GraphData graphData)
-        {
-            // Create property container element.
-
-            var row_1 = new VisualElement();
-            row_1.style.flexDirection = FlexDirection.Row;
-            var label = new Label("id :");
-            var idField = new Label($"{graphData.Idx}");
-
-            row_1.Add(label);
-            row_1.Add(idField);
-
-            container.Add(row_1);
-        }
-
-        return container;*/
     }
-    /*
-    public override void OnInspectorGUI()
-    {
-        if(target is GraphData graphData)
-        {
-            if (GUILayout.Button("Create Node"))
-            {
-                CreateFolderIfNotExits("Assets", "Resources");
-                CreateFolderIfNotExits("Assets/Resources","GraphDataSet");
-
-                var nodeData = NodeData.CreateInstance(graphData);
-                
-                if (graphData.Nodes == null)
-                {
-                    graphData.Nodes = new();
-                }
-
-                graphData.Nodes.Add(nodeData);
-            }
-
-            if (GUILayout.Button("Delete"))
-            {
-                if (graphData.Nodes == null || graphData.Nodes.Count == 0)
-                    return;
-
-                AssetDatabase.RemoveObjectFromAsset(graphData.Nodes[0]);
-                AssetDatabase.SaveAssets();
-                graphData.Nodes.RemoveAt(0);
-            }
-        
-        }
-        base.OnInspectorGUI();
-    }
-    */
-
+    
     public void OnCreateNode()
     {
         if (target is GraphData graphData)
         {
+            if (serializedObject.FindProperty("NodePrefab").objectReferenceValue is not GameObject go)
+            {
+                Debug.LogWarning("NodePrefab can't be null.");
+                return;
+            }
             // Setup
             CreateFolderIfNotExits("Assets", "Resources");
             CreateFolderIfNotExits("Assets/Resources", "GraphDataSet");
 
-            if (graphData.Nodes == null)
-            {
-                graphData.Nodes = new();
-            }
-
             // create asset instance
             var nodeData = NodeData.CreateInstance(graphData);
             // add that instance to Nodes
-            graphData.Nodes.Add(nodeData);
+            graphData.AddNode(nodeData);
 
-            // ****** reset ui
+            GameObject _go = PrefabUtility.InstantiatePrefab(new GameObject("as")) as GameObject;
+
+            InstantiateNodeToScene(go,nodeData);
+        }
+    }
+
+    public void OnClearNodes()
+    {
+        if(target is GraphData graphData)
+        {
+            graphData.ClearNode();
+
+            string path = "Assets/Resources/GraphData.asset";
+
+            var subAssets = AssetDatabase.LoadAllAssetsAtPath(path);
+            var mainAsset = AssetDatabase.LoadMainAssetAtPath(path);
+            Debug.Log(subAssets.Length);
+
             
+            foreach(var subAsset in subAssets)
+            {
+                if(subAsset == mainAsset)
+                    continue;
+                
+                AssetDatabase.RemoveObjectFromAsset(subAsset);
+            }
+
+            AssetDatabase.SaveAssets();
         }
     }
 
@@ -123,5 +130,18 @@ public class GraphDataCustomEditor : Editor
         {
             AssetDatabase.CreateFolder(parentFolder, folderToCreate);
         }
+    }
+
+    void InstantiateNodeToScene(GameObject prefab, NodeData nodeData)
+    {
+        GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+        go.transform.position = Vector3.zero;
+
+        if(!go.TryGetComponent(out Node node))
+        {
+            node = go.AddComponent<Node>();
+        }
+
+        node.NodeData = nodeData;
     }
 }

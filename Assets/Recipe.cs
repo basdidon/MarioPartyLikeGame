@@ -26,7 +26,6 @@ public class Recipe : MonoBehaviour
 [CustomPropertyDrawer(typeof(Ingredient))]
 public class IngredientDrawerUIE : PropertyDrawer
 {
-
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
         // Create property container element.

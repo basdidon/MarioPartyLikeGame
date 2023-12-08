@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using Utils.UIElements;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Board/Node")]
 public class NodeData : ScriptableObject
 {
-    [field: ReadOnly,SerializeField] public string Guid { get; private set; }
-    public int amount = 1;
+    [field: SerializeField] public string Guid { get; private set; }
+    [SerializeField] public int amount = 1;
+    public int myInt = 42;
 
     public void Init()
     {
@@ -28,21 +30,11 @@ public class NodeData : ScriptableObject
 
         return data;
     }
-    /*
-    public static NodeData CreateAsset(GraphData graph)
-    {
-        var data = CreateInstance();
-        AssetDatabase.CreateAsset(data);
-        AssetDatabase.SaveAssets();
-        return data;
-    }*/
 }
-
 
 [CustomPropertyDrawer(typeof(NodeData))]
 public class NodeDataPropertyDrawer : PropertyDrawer
 {
-    
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         return EditorGUI.GetPropertyHeight(property, label, true);
@@ -50,18 +42,33 @@ public class NodeDataPropertyDrawer : PropertyDrawer
     
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
-        // Load Uxml
-        /*
-        var assetTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UiDoc/GraphData.uxml");
-        var root = assetTree.Instantiate();
-        */
-        // Create property container element.
         var container = new VisualElement();
-
-        var label = new Label("a");
-
-        container.Add(label);
         
+        
+
+        var guidLabel = new TextField("Guid")
+        {
+            bindingPath = "Guid"
+        };
+
+        guidLabel.SetEnabled(false);
+
+        if(property.objectReferenceValue is NodeData nodeData)
+        {
+            guidLabel.value = nodeData.Guid;
+            container.Add(Layout.DrawDefaultScriptObjectField("NodeData",nodeData));
+        }
+
+        /*
+        SerializedProperty serializedPropertyMyInt = property.FindPropertyRelative("myInt");
+
+        Debug.Log("myInt " + serializedPropertyMyInt.intValue);
+
+        Debug.Log(property.FindPropertyRelative("amount").intValue);
+        */
+
+        container.Add(guidLabel);
+
         return container;
     }
 }
