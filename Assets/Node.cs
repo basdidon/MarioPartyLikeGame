@@ -5,44 +5,24 @@ using UnityEditor;
 using Fusion;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using Utils.UIElements;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class Node : MonoBehaviour
 {
+    [SerializeField] Node nextNode;
     [field: SerializeField] public NodeData NodeData { get; set; }
-    public NodeEdge[] nodeEdges;
-
-#if UNITY_EDITOR
-    private void OnDestroy()
-    {
-        Debug.Log("boom!!");
-    }
-#endif
-
 }
 
-[System.Serializable]
-public class NodeEdge
+[CustomEditor(typeof(Node))]
+public class NodeEditor: Editor
 {
-    [field: SerializeField] public Node From { get; set; }
-    [field: SerializeField] public Node To { get; set; }
-    [field: SerializeField] public bool IsOneWay { get; set; }
-    [field: SerializeField] public bool IsActive { get; set; }
-}
-/*
-[CustomPropertyDrawer(typeof(NodeEdge))]
-public class NodeEdgePD : PropertyDrawer
-{
-    public override VisualElement CreatePropertyGUI(SerializedProperty property)
+    public override VisualElement CreateInspectorGUI()
     {
-        // Create property container element.
         var container = new VisualElement();
 
-        var label = new Label("a");
-
-        container.Add(label);
+        container.Add(Layout.GetDefaultScriptPropertyField(serializedObject));
 
         return container;
     }
 }
-*/

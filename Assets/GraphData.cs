@@ -10,7 +10,7 @@ using System.Linq;
 [CreateAssetMenu(menuName ="ScriptableObjects/Board/Graph",fileName = "GraphData")]
 public class GraphData : ScriptableObject
 {
-    [field: SerializeField] GameObject NodePrefab { get; set; }
+    [SerializeField] GameObject NodePrefab;
     [SerializeField] List<NodeData> nodes = new();
     public IReadOnlyList<NodeData> Nodes => nodes;
 
@@ -49,6 +49,7 @@ public class GraphDataCustomEditor : Editor
             {
                 bindingPath = "NodePrefab"
             };
+            nodePrefabOF.allowSceneObjects = false;
 
             nodePrefabOF.RegisterValueChangedCallback(evt=> {
                 //serializedObject.FindProperty("NodePrefab").objectReferenceValue = evt.newValue;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,6 +9,13 @@ namespace Utils.UIElements
 {
     public class Layout
     {
+        public static PropertyField GetDefaultScriptPropertyField(SerializedObject serializedObject)
+        {
+            var scriptPropertyField = new PropertyField(serializedObject.FindProperty("m_Script"));
+            scriptPropertyField.SetEnabled(false);
+            return scriptPropertyField;
+        }
+
         public static ObjectField DrawDefaultScriptObjectField(UnityEngine.Object @object)
         {
             return DrawDefaultScriptObjectField("Script",@object);
