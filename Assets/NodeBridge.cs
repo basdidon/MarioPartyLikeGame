@@ -32,7 +32,17 @@ public class NodeBridge : MonoBehaviour
         get => isActive;
         set => isActive = value;
     }
-    
+
+    public void Initialize(Node from, Node to, bool isOneWay = true, bool isActive = true)
+    {
+        From = from;
+        To = to;
+        IsOneWay = isOneWay;
+        IsActive = isActive;
+
+        ToCenter();
+    }
+
     public void ToCenter()
     {
         if (From == null || To == null)
@@ -74,12 +84,16 @@ public class NodeBridgeEditor : Editor
         };
 
         isOneWayField.RegisterValueChangeCallback(evt => {
+            if (PrefabUtility.IsPartOfPrefabAsset(target))  // don't do anything if object is partPrefabAsset
+                return;
+
             var newValue = evt.changedProperty.boolValue;
             Debug.Log(newValue);
 
             var childRenderer = (target as NodeBridge).transform.GetChild(0).GetComponent<Renderer>();
             childRenderer.sharedMaterial.SetInt("_IsOneWay", newValue ? 0 : 1);
         });
+
         return container;
     }
 }
