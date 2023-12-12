@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using Utils.UIElements;
 using System.Linq;
+using System;
 
 [ExecuteInEditMode]
 public class NodeRegistry : MonoBehaviour
@@ -78,10 +79,23 @@ public class NodeRegistry : MonoBehaviour
             node = nodeGo.AddComponent<Node>();
         }
 
+        nodes.Add(node);
+
         return node;
     }
 
-    public NodeBridge CreateNodeBridge(Node fromNode,Node toNode)
+    public void RemoveNode(Node nodeToRemove)
+    {
+        var bridgesToRemove = nodeBridges.Where(bridge => bridge.From == nodeToRemove || bridge.To == nodeToRemove).ToList();
+        for(int i=0;i<bridgesToRemove.Count;i++)
+        {
+            DestroyImmediate(bridgesToRemove[i].gameObject);
+        }
+
+        nodes.Remove(nodeToRemove);
+    }
+
+    public NodeBridge CreateNodeBridge(Node fromNode,Node toNode,bool isOneWay = true,bool isActive = true)
     {
         var nodeBridgeGO = PrefabUtility.InstantiatePrefab(nodeBridgePrefab, nodeBridgesTransform) as GameObject;
 
@@ -90,9 +104,18 @@ public class NodeRegistry : MonoBehaviour
             nodeBridge = nodeBridgeGO.AddComponent<NodeBridge>();
         }
 
-        nodeBridge.Initialize(fromNode, toNode);
+        nodeBridge.Initialize(fromNode, toNode,isOneWay,isActive);
+
+        nodeBridges.Add(nodeBridge);
+        OnAddedNodeBridge?.Invoke(nodeBridge);
 
         return nodeBridge;
+    }
+
+    public void RemoveNodeBridge(NodeBridge nodeBridge)
+    {
+        nodeBridges.Remove(nodeBridge);
+        OnRemovedNodeBridge?.Invoke(nodeBridge);
     }
 
     public void CreateOutputNode(Node fromNode)
@@ -105,11 +128,7 @@ public class NodeRegistry : MonoBehaviour
         var toNode = CreateNode();
         toNode.transform.position = targetPos;
 
-        var nodeBridge = CreateNodeBridge(fromNode, toNode);
-
-
-        nodes.Add(toNode);
-        nodeBridges.Add(nodeBridge);
+        CreateNodeBridge(fromNode, toNode);
 
         Selection.activeObject = toNode;
     }
@@ -118,11 +137,21 @@ public class NodeRegistry : MonoBehaviour
     {
         return nodeBridges.Where(bridge => bridge.From == node || bridge.To == node);
     }
+
+    // Events
+    public event Action<NodeBridge> OnAddedNodeBridge;
+    public event Action<NodeBridge> OnRemovedNodeBridge;
 }
 
 [CustomEditor(typeof(NodeRegistry))]
 public class NodeRigistryEditor : Editor
 {
+    enum EdgeDirections { Normal, Inverese, Both }
+    EdgeDirections edgeDirection = EdgeDirections.Normal;
+
+    Node l_Node;
+    Node r_Node;
+
     public override VisualElement CreateInspectorGUI()
     {
         var container = new VisualElement();
@@ -135,15 +164,85 @@ public class NodeRigistryEditor : Editor
         var nodesPF = new PropertyField(serializedObject.FindProperty("nodes"));
         var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));
 
+        // Connect to exits node
+        var connectNodesContainer = new VisualElement();
+        var L_NodeOF = new ObjectField() { objectType = typeof(Node), value = l_Node };
+        var R_NodeOF = new ObjectField() { objectType = typeof(Node), value = r_Node };
+        var swapBtn = new Button() { text = GetBtnIcon() };
+        var createBridgeBtn = new Button() { text = "Create Bridge" };
+
+        connectNodesContainer.style.flexDirection = FlexDirection.Row;
+        connectNodesContainer.Add(L_NodeOF);
+        connectNodesContainer.Add(swapBtn);
+        connectNodesContainer.Add(R_NodeOF);
+        connectNodesContainer.Add(createBridgeBtn);
+
+        L_NodeOF.RegisterValueChangedCallback(evt =>
+        {
+            l_Node = evt.newValue as Node;
+        });
+
+        R_NodeOF.RegisterValueChangedCallback(evt =>
+        {
+            r_Node = evt.newValue as Node;
+        });
+
+        swapBtn.clicked += () =>
+        {
+            var enumIdx = (int)edgeDirection;
+            enumIdx = (enumIdx + 1) % Enum.GetValues(typeof(EdgeDirections)).Length;
+            edgeDirection = (EdgeDirections) enumIdx;
+
+            swapBtn.text = GetBtnIcon();
+        };
+
+        createBridgeBtn.clicked += ()=> OnCreateEdgeBtnClicked();
+
         container.Add(Layout.GetDefaultScriptPropertyField(serializedObject));
         container.Add(nodesTranformPF);
         container.Add(nodeBridgesTranformPF);
         container.Add(setupBtn);
+        container.Add(connectNodesContainer);
         container.Add(nodesPF);
         container.Add(nodeBridgesPF);
 
         setupBtn.clicked += (target as NodeRegistry).Setup;
 
         return container;
+    }
+
+    private void OnCreateEdgeBtnClicked()
+    {
+        if (target is NodeRegistry nodeRegistry && l_Node != null && r_Node != null)
+        {
+            if (edgeDirection == EdgeDirections.Normal)
+            {
+                nodeRegistry.CreateNodeBridge(l_Node,r_Node);
+            }else if(edgeDirection == EdgeDirections.Inverese)
+            {
+                nodeRegistry.CreateNodeBridge(r_Node, l_Node);
+            }
+            else
+            {
+                nodeRegistry.CreateNodeBridge(l_Node, r_Node, false);
+            }
+        }
+    }
+    
+
+    string GetBtnIcon()
+    {
+        if(edgeDirection == EdgeDirections.Normal)
+        {
+            return "-->";
+        }
+        else if(edgeDirection == EdgeDirections.Inverese)
+        {
+            return "<--";
+        }
+        else
+        {
+            return "<O>";
+        }
     }
 }

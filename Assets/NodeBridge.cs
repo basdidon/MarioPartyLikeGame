@@ -5,14 +5,16 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using Utils.UIElements;
+using System;
 
+[ExecuteInEditMode]
 public class NodeBridge : MonoBehaviour
 {
     [SerializeField] Node from;
     [SerializeField] Node to;
     [SerializeField] bool isOneWay;
     [SerializeField] bool isActive;
-    
+
     public Node From {
         get => from;
         set
@@ -24,9 +26,14 @@ public class NodeBridge : MonoBehaviour
         get => to; 
         set => to = value; 
     }
+
     public bool IsOneWay {
         get => isOneWay;
-        set => isOneWay = value;
+        set
+        {
+            isOneWay = value;
+            OnIsOneWayChanged?.Invoke(isOneWay);
+        }
     }
     public bool IsActive {
         get => isActive;
@@ -43,6 +50,9 @@ public class NodeBridge : MonoBehaviour
         ToCenter();
     }
 
+    // Events
+    public event Action<bool> OnIsOneWayChanged;
+
     public void ToCenter()
     {
         if (From == null || To == null)
@@ -51,6 +61,11 @@ public class NodeBridge : MonoBehaviour
         var newPos = Vector3.Lerp(From.transform.position, To.transform.position, 0.5f);
         transform.position = newPos;
         transform.LookAt(to.transform.position);
+    }
+
+    private void OnDestroy()
+    {
+        NodeRegistry.Instance.RemoveNodeBridge(this);
     }
 }
 
@@ -87,11 +102,13 @@ public class NodeBridgeEditor : Editor
             if (PrefabUtility.IsPartOfPrefabAsset(target))  // don't do anything if object is partPrefabAsset
                 return;
 
-            var newValue = evt.changedProperty.boolValue;
-            Debug.Log(newValue);
+            /// isOneWay is already changed
+            /// ,but it change value directly to property
+            /// ,so we need to set value again by setter
+            /// ,to let it raise event
 
-            var childRenderer = (target as NodeBridge).transform.GetChild(0).GetComponent<Renderer>();
-            childRenderer.sharedMaterial.SetInt("_IsOneWay", newValue ? 0 : 1);
+            if(target is NodeBridge nodeBridge)
+                nodeBridge.IsOneWay = evt.changedProperty.boolValue;
         });
 
         return container;

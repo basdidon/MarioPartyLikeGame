@@ -20,7 +20,17 @@ public class Node : MonoBehaviour
     private void OnEnable()
     {
         nodeBridges = new(NodeRegistry.Instance.GetNodeBridgesByNode(this));
+
+        NodeRegistry.Instance.OnAddedNodeBridge += OnAddedNodeBridgeHandle;
+        NodeRegistry.Instance.OnRemovedNodeBridge += OnRemovedNodeBridgeHandle;
+
         transform.hasChanged = false;
+    }
+
+    private void OnDisable()
+    {
+        NodeRegistry.Instance.OnAddedNodeBridge -= OnAddedNodeBridgeHandle;
+        NodeRegistry.Instance.OnRemovedNodeBridge -= OnRemovedNodeBridgeHandle;
     }
 
     public void AdjustAllNodeBridges()
@@ -30,13 +40,32 @@ public class Node : MonoBehaviour
             bridge.ToCenter();
         }
     }
+
+    public void OnAddedNodeBridgeHandle(NodeBridge nodeBridge)
+    {
+        if(nodeBridge.From == this || nodeBridge.To == this)
+        {
+            nodeBridges.Add(nodeBridge);
+        }
+    }
+
+    public void OnRemovedNodeBridgeHandle(NodeBridge nodeBridge)
+    {
+        if (nodeBridge.From == this || nodeBridge.To == this)
+        {
+            nodeBridges.Remove(nodeBridge);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        NodeRegistry.Instance.RemoveNode(this);
+    }
 }
 
 [CustomEditor(typeof(Node))]
 public class NodeEditor: Editor
 {
-    bool isSwap;
-
     public override VisualElement CreateInspectorGUI()
     {
         var container = new VisualElement();
@@ -56,43 +85,14 @@ public class NodeEditor: Editor
             NodeRegistry.Instance.CreateOutputNode(target as Node);
         };
 
-        // Connect to exits node
-        var connectNodesContainer = new VisualElement(); 
-        var thisNodeOF = new ObjectField() { objectType = typeof(Node)};
-        var targetNodeOF = new ObjectField() { objectType = typeof(Node)};
-        var directionLabel = new Label() { text = isSwap?"<-":"->"};
-        var swapBtn = new Button() { text = "Swap"};
-
-        thisNodeOF.value = target;
-        thisNodeOF.SetEnabled(false);
-
-        var shieldAreaPF = new PropertyField(serializedObject.FindProperty("shieldArea"));
-
-        connectNodesContainer.style.flexDirection = FlexDirection.Row;
-        connectNodesContainer.Add(thisNodeOF);
-        connectNodesContainer.Add(directionLabel);
-        connectNodesContainer.Add(targetNodeOF);
-        connectNodesContainer.Add(swapBtn);
-
-        swapBtn.clicked += () =>
-        {
-            isSwap = !isSwap;
-            directionLabel.text = isSwap ? "<-" : "->";
-
-            connectNodesContainer.Remove(thisNodeOF);
-            connectNodesContainer.Remove(targetNodeOF);
-
-
-        };
+       
 
 
         // List of bridges
         var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));
         //
         container.Add(createOutputNodeBtn);
-        container.Add(connectNodesContainer);
         container.Add(nodeBridgesPF);
-        container.Add(shieldAreaPF);
         return container;
     }
 
