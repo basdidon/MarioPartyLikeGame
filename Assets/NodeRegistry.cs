@@ -22,9 +22,10 @@ public class NodeRegistry : MonoBehaviour
     GameObject nodePrefab;
     GameObject nodeBridgePrefab;
 
+    public Node startNode;
+
     private void Awake()
     {
-        Debug.Log("aw");
         if(Instance != null && Instance != this)
         {
             Destroy(this);
@@ -156,6 +157,8 @@ public class NodeRigistryEditor : Editor
     {
         var container = new VisualElement();
 
+        var startNodePF = new PropertyField(serializedObject.FindProperty("startNode"));
+
         var nodesTranformPF = new PropertyField(serializedObject.FindProperty("nodesTransform"));
         var nodeBridgesTranformPF = new PropertyField(serializedObject.FindProperty("nodeBridgesTransform"));
 
@@ -199,6 +202,7 @@ public class NodeRigistryEditor : Editor
         createBridgeBtn.clicked += ()=> OnCreateEdgeBtnClicked();
 
         container.Add(Layout.GetDefaultScriptPropertyField(serializedObject));
+        container.Add(startNodePF);
         container.Add(nodesTranformPF);
         container.Add(nodeBridgesTranformPF);
         container.Add(setupBtn);

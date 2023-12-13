@@ -39,7 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _IsOneWay: 1
-    - _QueueControl: 1
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _arrowHeadHeight: 0.4
     - _arrowHeadWidth: 0.4

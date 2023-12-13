@@ -6,16 +6,19 @@ using Fusion;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using Utils.UIElements;
+using BasDidon.PathFinder.NodeBase;
+using System.Linq;
 
 [ExecuteInEditMode]
-public class Node : MonoBehaviour
+public class Node : MonoBehaviour,INode<Node>
 {
-    [SerializeField] Node nextNode;
     [field: SerializeField] public NodeData NodeData { get; set; }
     [SerializeField] List<NodeBridge> nodeBridges;
 
-    public float shieldArea = 10;
-    public bool tick = false;
+    // IEnumerable<NodeBridge> InputNodeBridges => nodeBridges.Where(bridge => !bridge.IsOneWay || bridge.To == this);
+    // IEnumerable<NodeBridge> OutputNodeBridges => nodeBridges.Where(bridge => !bridge.IsOneWay || bridge.From == this);
+
+    public List<Node> NextNodes => nodeBridges.Select(b => b.IsOutputOf(this, out Node other) ? other : null).ToList();
 
     private void OnEnable()
     {
@@ -84,9 +87,6 @@ public class NodeEditor: Editor
 
             NodeRegistry.Instance.CreateOutputNode(target as Node);
         };
-
-       
-
 
         // List of bridges
         var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));

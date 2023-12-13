@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "basdidonunitypackage": {
+      "version": "https://github.com/basdidon/basdidonUnityPackage.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2ed934906061ae38c18dba7400f65012f3ca9f4d"
+    },
     "com.unity.burst": {
       "version": "1.8.8",
       "depth": 1,
