@@ -41,10 +41,10 @@ Material:
     - _IsOneWay: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _arrowHeadHeight: 0.4
-    - _arrowHeadWidth: 0.4
+    - _arrowHeadHeight: 0.6
+    - _arrowHeadWidth: 1
     - _arrowLineHeight: 0.4
-    - _arrowLineWidth: 0.1
+    - _arrowLineWidth: 0.2
     - _arrowwLineHeight: 0.7
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

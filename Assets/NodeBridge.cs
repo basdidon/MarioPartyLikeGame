@@ -10,6 +10,7 @@ using System;
 [ExecuteInEditMode]
 public class NodeBridge : MonoBehaviour
 {
+    readonly Vector3 nodeBridgeOffset = new (0,-.498f);
     [SerializeField] Node from;
     [SerializeField] Node to;
     [SerializeField] bool isOneWay;
@@ -96,8 +97,9 @@ public class NodeBridge : MonoBehaviour
             return;
 
         var newPos = Vector3.Lerp(From.transform.position, To.transform.position, 0.5f);
-        transform.localPosition = newPos;
+        transform.position = newPos;
         transform.LookAt(to.transform.position);
+        transform.position += nodeBridgeOffset;
     }
 
     private void OnDestroy()
@@ -106,7 +108,7 @@ public class NodeBridge : MonoBehaviour
     }
 }
 
-[CustomEditor(typeof(NodeBridge))]
+[CustomEditor(typeof(NodeBridge)),CanEditMultipleObjects]
 public class NodeBridgeEditor : Editor
 {
     public override VisualElement CreateInspectorGUI()

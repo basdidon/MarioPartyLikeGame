@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
         }
     }
 
+    IEnumerable<NodePath<Node>> NodePaths;
+
     private void OnEnable()
     {
         Inputs.Enable();
@@ -39,7 +41,26 @@ public class Player : MonoBehaviour
             Debug.Log(rollResult);
             Debug.Log($"nextNodes.Count : {CurrentNode.NextNodes.Count}");
 
-            CurrentNode =  PathFinder.FindPathByMove(CurrentNode, rollResult).First().Last;
+            NodePaths = PathFinder.FindPathByMove(CurrentNode, rollResult);
+            CurrentNode =  NodePaths.First().Last;
+        };
+
+        Inputs.Player.MouseLeftClick.performed += _ =>
+        {
+            RaycastHit[] hits = new RaycastHit[100];
+            var screenPoint = Inputs.Player.MousePosition.ReadValue<Vector2>();
+            var camRay = Camera.main.ScreenPointToRay(screenPoint);
+
+            int hitsNum = Physics.RaycastNonAlloc(camRay.origin, camRay.direction, hits, 20);
+            if (hitsNum > 0)
+            {
+                if(hits.Take(hitsNum).Any(hit => hit.transform.CompareTag("Node")))
+                {
+                    var nodeTransfrom = hits.Where(hit => hit.transform.CompareTag("Node")).First().transform;
+                    var node = nodeTransfrom.GetComponentInParent<Node>();
+                    CurrentNode = node;
+                }
+            }
         };
     }
 
