@@ -151,3 +151,18 @@ public class NodeBridgeEditor : Editor
         return container;
     }
 }
+
+/*
+[CustomPropertyDrawer(typeof(NodeBridge))]
+public class NodeBridgePropertyDrawer : PropertyDrawer
+{
+    public override VisualElement CreatePropertyGUI(SerializedProperty property)
+    {
+        var conntainer = new VisualElement();
+        var txt = new Label() { text = "afg" };
+
+        conntainer.Add(txt);
+
+        return conntainer;
+    }
+}*/

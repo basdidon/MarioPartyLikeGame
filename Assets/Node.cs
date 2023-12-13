@@ -18,7 +18,7 @@ public class Node : MonoBehaviour,INode<Node>
     // IEnumerable<NodeBridge> InputNodeBridges => nodeBridges.Where(bridge => !bridge.IsOneWay || bridge.To == this);
     // IEnumerable<NodeBridge> OutputNodeBridges => nodeBridges.Where(bridge => !bridge.IsOneWay || bridge.From == this);
 
-    public List<Node> NextNodes => nodeBridges.Select(b => b.IsOutputOf(this, out Node other) ? other : null).ToList();
+    public List<Node> NextNodes => nodeBridges.Select(b => b.IsOutputOf(this, out Node other) ? other : null).Where(n=>n != null).ToList();
 
     private void OnEnable()
     {
