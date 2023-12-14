@@ -5,17 +5,36 @@ using UnityEditor;
 using Fusion;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using Utils.UIElements;
 using BasDidon.PathFinder.NodeBase;
+using BasDidon.Editor.UiElements;
 using System.Linq;
+using System;
 
 [ExecuteInEditMode]
-public class Node : MonoBehaviour,INode<Node>
+public class Node : MonoBehaviour, INode<Node>
 {
+    [SerializeField] Transform nodeMarkerTransform;
+    [SerializeField] bool canMoveTo;
+    public bool CanMoveTo{
+        get => canMoveTo;
+        set
+        {
+            canMoveTo = value;
+
+            OnCanMoveToChanged?.Invoke(CanMoveTo);
+        }
+    }
+
+
+
     [field: SerializeField] public NodeData NodeData { get; set; }
     [SerializeField] List<NodeBridge> nodeBridges;
 
     public List<Node> NextNodes => nodeBridges.Select(b => b.IsOutputOf(this, out Node other) ? other : null).Where(n=>n != null).ToList();
+
+    // Events
+    public event Action<bool> OnCanMoveToChanged;
+
 
     private void OnEnable()
     {
@@ -25,12 +44,20 @@ public class Node : MonoBehaviour,INode<Node>
         NodeRegistry.Instance.OnRemovedNodeBridge += OnRemovedNodeBridgeHandle;
 
         transform.hasChanged = false;
+
+        CanMoveTo = false;
     }
 
     private void OnDisable()
     {
         NodeRegistry.Instance.OnAddedNodeBridge -= OnAddedNodeBridgeHandle;
         NodeRegistry.Instance.OnRemovedNodeBridge -= OnRemovedNodeBridgeHandle;
+    }
+
+
+    private void OnDestroy()
+    {
+        NodeRegistry.Instance.RemoveNode(this);
     }
 
     public void AdjustAllNodeBridges()
@@ -57,10 +84,6 @@ public class Node : MonoBehaviour,INode<Node>
         }
     }
 
-    private void OnDestroy()
-    {
-        NodeRegistry.Instance.RemoveNode(this);
-    }
 }
 
 [CustomEditor(typeof(Node))]
@@ -70,7 +93,9 @@ public class NodeEditor: Editor
     {
         var container = new VisualElement();
 
-        container.Add(Layout.GetDefaultScriptPropertyField(serializedObject));
+        container.Add(BD_PropertyField.GetDefaultScriptRef(serializedObject));
+
+        var canMoveToPF = new PropertyField(serializedObject.FindProperty("canMoveTo"));
 
         // Add next node [create nodePrefap and nodeBridgePrefab to sceneView, connent new node by setting on nodeBridge]
         var createOutputNodeBtn = new Button() { text = "Create Output Node" };
@@ -88,6 +113,7 @@ public class NodeEditor: Editor
         // List of bridges
         var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));
         //
+        container.Add(canMoveToPF);
         container.Add(createOutputNodeBtn);
         container.Add(nodeBridgesPF);
         return container;

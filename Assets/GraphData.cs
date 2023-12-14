@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using Utils.UIElements;
-using System.Linq;
+using BasDidon.Editor.UiElements;
 
 [CreateAssetMenu(menuName ="ScriptableObjects/Board/Graph",fileName = "GraphData")]
 public class GraphData : ScriptableObject
@@ -34,7 +33,7 @@ public class GraphDataCustomEditor : Editor
 
         if (target is GraphData graphData)
         {
-            var scriptField = Layout.DrawDefaultScriptObjectField(graphData);
+            var scriptField = BD_PropertyField.GetDefaultScriptRef(serializedObject);
 
             var btnGroup = new VisualElement();
             btnGroup.style.flexDirection = FlexDirection.Row;

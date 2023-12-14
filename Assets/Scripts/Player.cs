@@ -6,9 +6,10 @@ using System.Linq;
 
 public class Player : MonoBehaviour
 {
-    Inputs Inputs { get; set; }
+    public int RollResult { get; private set; }
+
     Node currentNode;
-    Node CurrentNode
+    public Node CurrentNode
     {
         get => currentNode;
         set
@@ -18,54 +19,30 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerable<NodePath<Node>> NodePaths;
-
-    private void OnEnable()
-    {
-        Inputs.Enable();
-    }
-
-    private void OnDisable()
-    {
-        Inputs.Disable();
-    }
-
-    private void Awake()
-    {
-        Inputs = new();
-
-        Inputs.Player.Roll.performed += _ =>
-        {
-            var rollResult = Random.Range(1, 6);
-            
-            Debug.Log(rollResult);
-            Debug.Log($"nextNodes.Count : {CurrentNode.NextNodes.Count}");
-
-            NodePaths = PathFinder.FindPathByMove(CurrentNode, rollResult);
-            CurrentNode =  NodePaths.First().Last;
-        };
-
-        Inputs.Player.MouseLeftClick.performed += _ =>
-        {
-            RaycastHit[] hits = new RaycastHit[100];
-            var screenPoint = Inputs.Player.MousePosition.ReadValue<Vector2>();
-            var camRay = Camera.main.ScreenPointToRay(screenPoint);
-
-            int hitsNum = Physics.RaycastNonAlloc(camRay.origin, camRay.direction, hits, 20);
-            if (hitsNum > 0)
-            {
-                if(hits.Take(hitsNum).Any(hit => hit.transform.CompareTag("Node")))
-                {
-                    var nodeTransfrom = hits.Where(hit => hit.transform.CompareTag("Node")).First().transform;
-                    var node = nodeTransfrom.GetComponentInParent<Node>();
-                    CurrentNode = node;
-                }
-            }
-        };
-    }
+    public List<NodePath<Node>> NodePaths { get; set;}
 
     void Start()
     {
         CurrentNode = NodeRegistry.Instance.startNode;
+    }
+
+    public void RollADice()
+    {
+        RollResult = Random.Range(1, 6);
+
+        Debug.Log(RollResult);
+        Debug.Log($"nextNodes.Count : {CurrentNode.NextNodes.Count}");
+
+        NodePaths = PathFinder.FindPathByMove(CurrentNode, RollResult).ToList();
+
+        foreach (var path in NodePaths)
+        {
+            path.Last.CanMoveTo = true;
+        }
+    }
+
+    public void PredictMove()
+    {
+
     }
 }

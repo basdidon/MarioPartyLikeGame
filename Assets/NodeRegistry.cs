@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor;
 using UnityEditor.UIElements;
-using Utils.UIElements;
 using System.Linq;
 using System;
+using BasDidon.Editor.UiElements;
+using BasDidon.ObjectPool;
 
 [ExecuteInEditMode]
 public class NodeRegistry : MonoBehaviour
@@ -67,9 +68,12 @@ public class NodeRegistry : MonoBehaviour
         }
     }
 
-    public void Test()
+    public void ResetCanMoveTo()
     {
-        Debug.Log(Instance == null);
+        foreach(var node in nodes)
+        {
+            node.CanMoveTo = false;
+        }
     }
 
     public Node CreateNode()
@@ -167,6 +171,8 @@ public class NodeRigistryEditor : Editor
         var nodesPF = new PropertyField(serializedObject.FindProperty("nodes"));
         var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));
 
+        var poolManagerPF = new PropertyField(serializedObject.FindProperty("poolManager"));
+
         // Connect to exits node
         var connectNodesContainer = new VisualElement();
         var L_NodeOF = new ObjectField() { objectType = typeof(Node), value = l_Node };
@@ -201,10 +207,11 @@ public class NodeRigistryEditor : Editor
 
         createBridgeBtn.clicked += ()=> OnCreateEdgeBtnClicked();
 
-        container.Add(Layout.GetDefaultScriptPropertyField(serializedObject));
+        container.Add(BD_PropertyField.GetDefaultScriptRef(serializedObject));
         container.Add(startNodePF);
         container.Add(nodesTranformPF);
         container.Add(nodeBridgesTranformPF);
+        container.Add(poolManagerPF);
         container.Add(setupBtn);
         container.Add(connectNodesContainer);
         container.Add(nodesPF);

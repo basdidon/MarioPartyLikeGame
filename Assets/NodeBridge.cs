@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using Utils.UIElements;
+using BasDidon.Editor.UiElements;
 using System;
 
 [ExecuteInEditMode]
@@ -123,7 +123,7 @@ public class NodeBridgeEditor : Editor
 
         var toCenterBtn = new Button() { text = "ToCenter" };
 
-        container.Add(Layout.GetDefaultScriptPropertyField(serializedObject));
+        container.Add(BD_PropertyField.GetDefaultScriptRef(serializedObject));
         // btn[s]
         container.Add(toCenterBtn);
         // property field

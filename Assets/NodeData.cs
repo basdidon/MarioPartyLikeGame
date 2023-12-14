@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
-using Utils.UIElements;
+using BasDidon.Editor.UiElements;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Board/Node")]
 public class NodeData : ScriptableObject
@@ -56,7 +55,7 @@ public class NodeDataPropertyDrawer : PropertyDrawer
         if(property.objectReferenceValue is NodeData nodeData)
         {
             guidLabel.value = nodeData.Guid;
-            container.Add(Layout.DrawDefaultScriptObjectField("NodeData",nodeData));
+            container.Add(BD_PropertyField.GetDefaultScriptRef(property.serializedObject));
         }
 
         /*

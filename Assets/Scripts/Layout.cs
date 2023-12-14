@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+/*
 namespace Utils.UIElements
 {
     public class Layout
@@ -15,7 +15,7 @@ namespace Utils.UIElements
             scriptPropertyField.SetEnabled(false);
             return scriptPropertyField;
         }
-
+        /*
         public static ObjectField DrawDefaultScriptObjectField(UnityEngine.Object @object)
         {
             return DrawDefaultScriptObjectField("Script",@object);
@@ -32,7 +32,7 @@ namespace Utils.UIElements
 
             return objField;
         }
-
+        
         public static ObjectField DrawObjectField(string label)
         {
             var objField = new ObjectField(label);
@@ -69,4 +69,4 @@ namespace Utils.UIElements
             return listView;
         }
     }
-}
+}*/
