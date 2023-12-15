@@ -2,20 +2,31 @@ using BasDidon.PathFinder.NodeBase;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputProvider : MonoBehaviour
 {
     Inputs Inputs { get; set; }
     public Player Player { get; private set; }
 
+    // To Read Value
+    [field: SerializeField] InputActionReference CursorPositionActionRef { get; set; }
+    public InputAction CursorPositionAction => CursorPositionActionRef.action;
+
+    // To Invoke Action
+    [field: SerializeField] InputActionReference RollActionRef { get; set; }
+    public InputAction RollAction => RollActionRef.action;
+    [field: SerializeField] InputActionReference ClickToMoveActionRef { get; set; }
+    public InputAction ClickToMoveAction => ClickToMoveActionRef.action;
+
     private void OnEnable()
     {
-        Inputs.Enable();
+        CursorPositionActionRef.action.Enable();
     }
 
     private void OnDisable()
     {
-        Inputs.Disable();
+        CursorPositionActionRef.action.Disable();
     }
 
     private void Awake()
@@ -26,6 +37,7 @@ public class InputProvider : MonoBehaviour
 
         Inputs.Player.MouseLeftClick.performed += _ =>
         {
+            /*
             RaycastHit[] hits = new RaycastHit[100];
             var screenPoint = Inputs.Player.MousePosition.ReadValue<Vector2>();
             var camRay = Camera.main.ScreenPointToRay(screenPoint);
@@ -48,7 +60,7 @@ public class InputProvider : MonoBehaviour
                         Debug.Log("you need to select node that you can move to.");
                     }
                 }
-            }
+            }*/
         };
     }
 }

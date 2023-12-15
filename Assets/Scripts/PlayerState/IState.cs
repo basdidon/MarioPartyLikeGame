@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
-public interface IState
+
+public interface IState<T> where T : IStateActor<T>
 {
-    IStateActor StateActor { get; set; }
+    T StateActor { get; }
 
     void EnterState();
     void UpdateState();
     void ExitState();
 }
 
-
 public interface IStateActor<T> where T : IStateActor<T>
 {
-    void SetState<T>(IState<T> state) where T : IStateActor; 
-}*/
+    IState<T> State { get; set; }
+}

@@ -500,6 +500,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7223be66b72399a47964abcb4f74502d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CursorPositionActionRef>k__BackingField: {fileID: -3874832226000936476, guid: e6f927a30bfa086449b735c827ff2722,
+    type: 3}
+  <RollActionRef>k__BackingField: {fileID: 2670305468055958988, guid: e6f927a30bfa086449b735c827ff2722,
+    type: 3}
+  <ClickToMoveActionRef>k__BackingField: {fileID: -4201691192239584074, guid: e6f927a30bfa086449b735c827ff2722,
+    type: 3}
 --- !u!1001 &126117685
 PrefabInstance:
   m_ObjectHideFlags: 0
