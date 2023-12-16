@@ -18,6 +18,7 @@ public class NodeRegistry : MonoBehaviour
     [SerializeField] Transform nodeBridgesTransform;
 
     [SerializeField] List<Node> nodes;
+    public IReadOnlyList<Node> Nodes => nodes;
     [SerializeField] List<NodeBridge> nodeBridges;
 
     GameObject nodePrefab;
