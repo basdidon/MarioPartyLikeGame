@@ -44,7 +44,7 @@ public class SelectNodeToMoveState : IState<Player>
         var screenPoint = StateActor.InputProvider.CursorPositionAction.ReadValue<Vector2>();
         var camRay = Camera.main.ScreenPointToRay(screenPoint);
 
-        int hitsNum = Physics.RaycastNonAlloc(camRay.origin, camRay.direction, hits, 20);
+        int hitsNum = Physics.RaycastNonAlloc(camRay.origin, camRay.direction, hits, 100);
         if (hitsNum > 0 && hits.Take(hitsNum).Any(hit => hit.transform.CompareTag("Node")))
         {
             var nodeTransfrom = hits.Where(hit => hit.transform.CompareTag("Node")).First().transform;
@@ -58,8 +58,10 @@ public class SelectNodeToMoveState : IState<Player>
     }
 
     public void OnClick(InputAction.CallbackContext ctx) {
+        Debug.Log("onClick");
         if (NodePaths.Select(path => path.Last).Contains(focusNode))
         {
+            Debug.Log("success");
             StateActor.State = new MoveState(StateActor, NodePaths.First(path => path.Last == focusNode).Nodes.GetEnumerator());
         }
     }

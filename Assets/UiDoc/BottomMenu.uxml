@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UiDoc/bottomMenuStyle.uss?fileID=7433441132597879392&amp;guid=e13df925fe7f5cf4ea6e73dfb07cafdc&amp;type=3#bottomMenuStyle" />
+    <ui:VisualElement name="footer-container" style="margin-top: auto;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; width: 450px; height: 450px; position: absolute; left: auto; justify-content: center; align-self: center; top: -225px; background-color: rgb(81, 219, 229); border-top-left-radius: 500px; border-top-right-radius: 500px; border-bottom-right-radius: 500px; border-bottom-left-radius: 500px; align-items: center;" />
+        <ui:VisualElement style="height: 240px; min-height: 240px; max-height: 20%; background-color: rgb(81, 219, 229);" />
+        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="roll-btn" class="roll-btn">
+            <ui:VisualElement name="roll-ico" class="roll-ico" style="flex-grow: 1;" />
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

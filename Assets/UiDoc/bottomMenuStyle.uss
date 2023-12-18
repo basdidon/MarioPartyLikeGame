@@ -1,0 +1,24 @@
+.roll-btn {
+    flex-grow: 0;
+    width: 350px;
+    height: 350px;
+    position: absolute;
+    left: auto;
+    justify-content: center;
+    align-self: center;
+    top: -180px;
+    border-top-left-radius: 500px;
+    border-top-right-radius: 500px;
+    border-bottom-right-radius: 500px;
+    border-bottom-left-radius: 500px;
+    background-image: url('project://database/Assets/Basic_GUI_Bundle/ButtonsIcons/IconButton_Large_Blue_Circle.png?fileID=2800000&guid=31ba133045c0ce347a4214a34eae0ba5&type=3#IconButton_Large_Blue_Circle');
+    padding-top: 64px;
+    padding-right: 64px;
+    padding-bottom: 64px;
+    padding-left: 64px;
+}
+
+.roll-ico {
+    flex-grow: 1;
+    background-image: url('project://database/Assets/kenney_board-game-icons/PNG/Double%20(128px)/dice_3D_detailed.png?fileID=2800000&guid=d04f361c0c6cc804c8952425e78719a3&type=3#dice_3D_detailed');
+}
