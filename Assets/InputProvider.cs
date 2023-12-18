@@ -19,19 +19,43 @@ public class InputProvider : MonoBehaviour
     [field: SerializeField] InputActionReference ClickToMoveActionRef { get; set; }
     public InputAction ClickToMoveAction => ClickToMoveActionRef.action;
 
+    [field: SerializeField] InputActionReference TouchActionRef { get; set; }
+    public InputAction TouchAction => TouchActionRef.action;
+    [field: SerializeField] InputActionReference TouchStartAtActionRef { get; set; }
+    public InputAction TouchStartAtAction => TouchStartAtActionRef.action;
     private void OnEnable()
     {
-        CursorPositionActionRef.action.Enable();
+        CursorPositionAction.Enable();
+
+        TouchAction.Enable();
+        TouchStartAtAction.Enable();
     }
 
     private void OnDisable()
     {
-        CursorPositionActionRef.action.Disable();
+        CursorPositionAction.Disable();
+
+        TouchAction.Disable();
+        TouchStartAtAction.Disable();
     }
 
     private void Awake()
     {
         Inputs = new();
+
+        TouchAction.performed += ctx => {
+            Debug.Log($"Start : {ctx.action}");
+        };
+
+        TouchAction.canceled += ctx =>
+        {
+            Debug.Log("End");
+        };
+
+        TouchStartAtAction.performed += ctx =>
+        {
+            Debug.Log($"Start at : {ctx.ReadValue<Vector2>()}");
+        };
 
         Inputs.Player.Roll.performed += _ => Player.RollADice();
 

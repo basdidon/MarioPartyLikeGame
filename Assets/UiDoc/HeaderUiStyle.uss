@@ -1,0 +1,17 @@
+.Icon {
+    flex-grow: 1;
+    max-width: 120px;
+    justify-content: center;
+    align-items: center;
+    align-self: auto;
+    flex-direction: row;
+    margin-right: 24px;
+}
+
+.coin-icon {
+    background-image: url('project://database/Assets/Basic_GUI_Bundle/Icons/Icon_Small_CoinDollar.png?fileID=2800000&guid=6672d206e154f2c4287ef9e906822819&type=3#Icon_Small_CoinDollar');
+}
+
+.star-icon {
+    background-image: url('project://database/Assets/Basic_GUI_Bundle/Icons/Icon_Small_Star.png?fileID=2800000&guid=4a36e99250f3eec418ecbdfffee2d1ea&type=3#Icon_Small_Star');
+}
