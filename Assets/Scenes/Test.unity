@@ -461,10 +461,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1581292091}
+  - component: {fileID: 1581292093}
   - component: {fileID: 1581292090}
   - component: {fileID: 1581292089}
   - component: {fileID: 1581292092}
-  - component: {fileID: 1581292093}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -605,6 +605,7 @@ MonoBehaviour:
   <DragActionRef>k__BackingField: {fileID: -1682328241249541787, guid: e6f927a30bfa086449b735c827ff2722,
     type: 3}
   <IsDragging>k__BackingField: 0
+  IsClamp: 0
   <YPos>k__BackingField: 0
   <MinX>k__BackingField: 0
   <MinZ>k__BackingField: -100
@@ -621,7 +622,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2112989432}
-  - component: {fileID: 2112989433}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -644,93 +644,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2112989433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2112989431}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: e6f927a30bfa086449b735c827ff2722,
-    type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 26dde9ee-73b3-42e0-90aa-4c347ed0c74c
-    m_ActionName: Player/Roll[/Keyboard/r]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a01a4e57-aa28-4485-96c6-fe5e516ab581
-    m_ActionName: Player/MousePosition[/Mouse/position,/Device Simulator Touchscreen/primaryTouch/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 27f2f51a-4754-46d6-bce1-c385672213fa
-    m_ActionName: Player/MouseLeftClick[/Mouse/leftButton,/Device Simulator Touchscreen/primaryTouch/tap]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 7a8ec852-3f3b-41d3-adda-a62b92e0796e
-    m_ActionName: Player/Touch[/Device Simulator Touchscreen/primaryTouch]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: bc2c81e8-88d5-4c20-93f8-4e0d6a5f15d4
-    m_ActionName: Player/TouchStartAt[/Device Simulator Touchscreen/primaryTouch/startPosition]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 51bfe695-3f1c-4cf1-ab45-41c62216f8af
-    m_ActionName: Player/IsTouch[/Device Simulator Touchscreen/primaryTouch/press]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: e28c3b79-7f86-4716-be31-1703672e951a
-    m_ActionName: TouchScreen/Hold[/Device Simulator Touchscreen/press]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 88ff2c0c-fc83-44b3-abb3-c538aa70f5ef
-    m_ActionName: TouchScreen/Tap[/Device Simulator Touchscreen/primaryTouch/tap]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8138edfa-edbb-47e0-8ee2-98df1ad09a99
-    m_ActionName: TouchScreen/Delta[/Device Simulator Touchscreen/primaryTouch/delta]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1581292093}
-        m_TargetAssemblyTypeName: CameraDrag, Assembly-CSharp
-        m_MethodName: OnDrag
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 88a58681-1ff2-4c6e-85f5-0744549e67d7
-    m_ActionName: TouchScreen/Press[/Device Simulator Touchscreen/press]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 70041a5a-b708-4b0b-908d-03584d2045bf
-    m_ActionName: TouchScreen/Position[/Device Simulator Touchscreen/position]
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Touchscreen
-  m_DefaultActionMap: TouchScreen
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

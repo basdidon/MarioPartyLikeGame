@@ -12,6 +12,8 @@ public class CameraDrag : MonoBehaviour
     [field: SerializeField, ReadOnly] bool IsDragging { get; set; }
     public Vector3 GetMousePosition => Vector3.Scale(Camera.ScreenToWorldPoint(Pointer.current.position.ReadValue()), new(1, 0, 1)); // freeze y axis
 
+    [field: SerializeField] public bool IsClamp;
+
     [field: SerializeField,ReadOnly] public float YPos { get; set; }
 
     [field: SerializeField] public float MinX { get; set; }
@@ -43,8 +45,8 @@ public class CameraDrag : MonoBehaviour
             Origin = GetMousePosition;
             IsDragging = true;
         };
-        PressAction.canceled += _ => IsDragging = false;
 
+        PressAction.canceled += _ => IsDragging = false;
         YPos = transform.position.y;
     }
 
@@ -55,16 +57,17 @@ public class CameraDrag : MonoBehaviour
 
         Difference = GetMousePosition - transform.position;
         transform.position = Origin - Difference;
-        ClampPosition();
+     
+        if(IsClamp)
+            ClampPosition();
     }
 
-
-    void ClampPosition() 
+    void ClampPosition()
     {
         transform.position = new(
             Mathf.Clamp(transform.position.x,MinX,MaxX),
             YPos,
             Mathf.Clamp(transform.position.z,MinZ,MaxZ)
-        ); 
+        );
     }
 }

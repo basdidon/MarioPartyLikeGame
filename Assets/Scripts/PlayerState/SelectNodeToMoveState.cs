@@ -1,6 +1,4 @@
 using BasDidon.PathFinder.NodeBase;
-using BasDidon.TargetSelector;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -39,7 +37,6 @@ public class SelectNodeToMoveState : IState<Player>
         }
         else
         {
-            StateActor.InputProvider.ClickToMoveAction.Enable();
             StateActor.InputProvider.ClickToMoveAction.performed += OnClick;
         }
     }
@@ -51,7 +48,6 @@ public class SelectNodeToMoveState : IState<Player>
         if (!IsAutoSelect)
         {
             StateActor.InputProvider.ClickToMoveAction.performed -= OnClick;
-            StateActor.InputProvider.ClickToMoveAction.Disable();
         }
     }
     

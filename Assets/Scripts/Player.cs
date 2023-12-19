@@ -21,7 +21,7 @@ public class Player : MonoBehaviour,IStateActor<Player>
         }
     }
 
-    public List<NodePath<Node>> NodePaths { get; set;}
+    // public List<NodePath<Node>> NodePaths { get; set;}
 
     // State
     IState<Player> state;
@@ -60,7 +60,7 @@ public class Player : MonoBehaviour,IStateActor<Player>
     {
         State?.UpdateState();
     }
-
+    /*
     public void RollADice()
     {
         RollResult = Random.Range(1, 6);
@@ -75,7 +75,7 @@ public class Player : MonoBehaviour,IStateActor<Player>
             path.Last.CanMoveTo = true;
         }
     }
-
+    */
     public void PredictMove()
     {
 

@@ -12,28 +12,22 @@ public class IdleState : IState<Player>
 
     public void EnterState()
     {
-        StateActor.InputProvider.RollAction.Enable();
-        StateActor.InputProvider.RollAction.performed += OnRollAction;
-
         ActionMapper.Instance.OnRolled += OnRollAction;
-    }
-
-    public void ExitState()
-    {
-        StateActor.InputProvider.RollAction.Disable();
-        StateActor.InputProvider.RollAction.performed -= OnRollAction;
-
-        ActionMapper.Instance.OnRolled -= OnRollAction;
     }
 
     public void UpdateState() { }
 
-    // Actions
-    public void OnRollAction(InputAction.CallbackContext ctx) => OnRollAction();
+    public void ExitState()
+    {
+        ActionMapper.Instance.OnRolled -= OnRollAction;
+    }
 
-    public void OnRollAction()
+    // Action Handle
+    void OnRollAction()
     {
         var rollResult = Random.Range(1, 6);
+
+        // add raise on rolled events upter this
         Debug.Log($"RollResult : {rollResult}");
 
         StateActor.State = new SelectNodeToMoveState(StateActor, rollResult);

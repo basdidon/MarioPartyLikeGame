@@ -513,10 +513,6 @@ MonoBehaviour:
     type: 3}
   <ClickToMoveActionRef>k__BackingField: {fileID: -4201691192239584074, guid: e6f927a30bfa086449b735c827ff2722,
     type: 3}
-  <TouchActionRef>k__BackingField: {fileID: -5810356490622332009, guid: e6f927a30bfa086449b735c827ff2722,
-    type: 3}
-  <TouchStartAtActionRef>k__BackingField: {fileID: -2536098892433413491, guid: e6f927a30bfa086449b735c827ff2722,
-    type: 3}
 --- !u!114 &99535152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1157,9 +1153,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 330585546}
+  - component: {fileID: 330585548}
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1285,6 +1283,43 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3612842832d89f342b7e94502e160721, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DragActionRef>k__BackingField: {fileID: -1682328241249541787, guid: e6f927a30bfa086449b735c827ff2722,
+    type: 3}
+  <IsDragging>k__BackingField: 0
+  IsClamp: 0
+  <YPos>k__BackingField: 0
+  <MinX>k__BackingField: 0
+  <MinZ>k__BackingField: 0
+  <MaxX>k__BackingField: 0
+  <MaxZ>k__BackingField: 0
+  <Origin>k__BackingField: {x: 0, y: 0, z: 0}
+  <Difference>k__BackingField: {x: 0, y: 0, z: 0}
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f685935882c8d0f4eb901123c01893f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Y: 0
+  <IsDrawGizmosOnSelected>k__BackingField: 0
 --- !u!1001 &379730810
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -53,33 +53,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Touch"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""7a8ec852-3f3b-41d3-adda-a62b92e0796e"",
-                    ""expectedControlType"": ""Touch"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""TouchStartAt"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""bc2c81e8-88d5-4c20-93f8-4e0d6a5f15d4"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""IsTouch"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""51bfe695-3f1c-4cf1-ab45-41c62216f8af"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press"",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -135,39 +108,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""MouseLeftClick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1b18930e-b45f-4e33-be51-e820c5b6d4f0"",
-                    ""path"": ""<Touchscreen>/primaryTouch"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touchscreen"",
-                    ""action"": ""Touch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9a9edaf7-64be-4288-ad76-8aa53d91941a"",
-                    ""path"": ""<Touchscreen>/primaryTouch/startPosition"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touchscreen"",
-                    ""action"": ""TouchStartAt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""263be52c-c5ce-4c16-a385-75af659c012d"",
-                    ""path"": ""<Touchscreen>/primaryTouch/press"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touchscreen"",
-                    ""action"": ""IsTouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -340,9 +280,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
         m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
         m_Player_MouseLeftClick = m_Player.FindAction("MouseLeftClick", throwIfNotFound: true);
-        m_Player_Touch = m_Player.FindAction("Touch", throwIfNotFound: true);
-        m_Player_TouchStartAt = m_Player.FindAction("TouchStartAt", throwIfNotFound: true);
-        m_Player_IsTouch = m_Player.FindAction("IsTouch", throwIfNotFound: true);
         // TouchScreen
         m_TouchScreen = asset.FindActionMap("TouchScreen", throwIfNotFound: true);
         m_TouchScreen_Hold = m_TouchScreen.FindAction("Hold", throwIfNotFound: true);
@@ -417,9 +354,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Roll;
     private readonly InputAction m_Player_MousePosition;
     private readonly InputAction m_Player_MouseLeftClick;
-    private readonly InputAction m_Player_Touch;
-    private readonly InputAction m_Player_TouchStartAt;
-    private readonly InputAction m_Player_IsTouch;
     public struct PlayerActions
     {
         private @Inputs m_Wrapper;
@@ -427,9 +361,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @Roll => m_Wrapper.m_Player_Roll;
         public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
         public InputAction @MouseLeftClick => m_Wrapper.m_Player_MouseLeftClick;
-        public InputAction @Touch => m_Wrapper.m_Player_Touch;
-        public InputAction @TouchStartAt => m_Wrapper.m_Player_TouchStartAt;
-        public InputAction @IsTouch => m_Wrapper.m_Player_IsTouch;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -448,15 +379,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @MouseLeftClick.started += instance.OnMouseLeftClick;
             @MouseLeftClick.performed += instance.OnMouseLeftClick;
             @MouseLeftClick.canceled += instance.OnMouseLeftClick;
-            @Touch.started += instance.OnTouch;
-            @Touch.performed += instance.OnTouch;
-            @Touch.canceled += instance.OnTouch;
-            @TouchStartAt.started += instance.OnTouchStartAt;
-            @TouchStartAt.performed += instance.OnTouchStartAt;
-            @TouchStartAt.canceled += instance.OnTouchStartAt;
-            @IsTouch.started += instance.OnIsTouch;
-            @IsTouch.performed += instance.OnIsTouch;
-            @IsTouch.canceled += instance.OnIsTouch;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -470,15 +392,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @MouseLeftClick.started -= instance.OnMouseLeftClick;
             @MouseLeftClick.performed -= instance.OnMouseLeftClick;
             @MouseLeftClick.canceled -= instance.OnMouseLeftClick;
-            @Touch.started -= instance.OnTouch;
-            @Touch.performed -= instance.OnTouch;
-            @Touch.canceled -= instance.OnTouch;
-            @TouchStartAt.started -= instance.OnTouchStartAt;
-            @TouchStartAt.performed -= instance.OnTouchStartAt;
-            @TouchStartAt.canceled -= instance.OnTouchStartAt;
-            @IsTouch.started -= instance.OnIsTouch;
-            @IsTouch.performed -= instance.OnIsTouch;
-            @IsTouch.canceled -= instance.OnIsTouch;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -634,9 +547,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnRoll(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnMouseLeftClick(InputAction.CallbackContext context);
-        void OnTouch(InputAction.CallbackContext context);
-        void OnTouchStartAt(InputAction.CallbackContext context);
-        void OnIsTouch(InputAction.CallbackContext context);
     }
     public interface ITouchScreenActions
     {
