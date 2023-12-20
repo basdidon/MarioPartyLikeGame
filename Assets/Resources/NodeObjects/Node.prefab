@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2130680772591561282}
   - component: {fileID: 6429392354793425144}
   - component: {fileID: 6126106946604383255}
+  - component: {fileID: 1224440708768649387}
   m_Layer: 0
   m_Name: Node-Icon
   m_TagString: Untagged
@@ -49,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2767843765483427855}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -62,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a82b0404419315545b663364be24035a, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -106,6 +107,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1224440708768649387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2767843765483427855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5931127f80f90544ab887466b58927f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2859518940606758836
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3580668235389811869}
   - component: {fileID: 3131535311696402499}
-  - component: {fileID: 468310849618516410}
   m_Layer: 0
   m_Name: Node
   m_TagString: Node
@@ -155,26 +167,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeMarkerTransform: {fileID: 0}
-  canMoveTo: 0
-  <NodeData>k__BackingField: {fileID: 0}
+  selectable: 0
+  nodeType: 0
+  nodeData: {fileID: 0}
   nodeBridges: []
---- !u!114 &468310849618516410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2859518940606758836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17a90ecd3265e834196fa5c43268fae7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  potionResult:
-    name: 
-    amount: 1
-    unit: 0
-  potionIngredients: []
 --- !u!1001 &1583375845200874981
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -352,6 +348,11 @@ PrefabInstance:
     - target: {fileID: 5711203395500897351, guid: 39e28d1f612fe7544bb583476adfd19e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023265760339710386, guid: 39e28d1f612fe7544bb583476adfd19e,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

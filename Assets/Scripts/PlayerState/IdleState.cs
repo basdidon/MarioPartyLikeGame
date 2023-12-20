@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using BasDidon.PathFinder.NodeBase;
+using System.Collections.Generic;
+using System.Linq;
 
 public class IdleState : IState<Player>
 {
@@ -30,6 +33,20 @@ public class IdleState : IState<Player>
         // add raise on rolled events upter this
         Debug.Log($"RollResult : {rollResult}");
 
-        StateActor.State = new SelectNodeToMoveState(StateActor, rollResult);
+        List<NodePath<Node>> NodePaths = PathFinder.FindPathByMove(StateActor.CurrentNode, rollResult).ToList();
+
+        
+        if(NodePaths.Count == 1)
+        {
+            StateActor.State = new AutoSelectNodeState(StateActor, NodePaths[0]);
+        }
+        else if (NodePaths.Count > 1)
+        {
+            StateActor.State = new SelectNodeToMoveState(StateActor, NodePaths);
+        }
+        else
+        {
+            throw new System.ArgumentOutOfRangeException();
+        }
     }
 }

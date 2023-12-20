@@ -10,31 +10,51 @@ using BasDidon.Editor.UiElements;
 using System.Linq;
 using System;
 
+public enum NodeTypes
+{
+    StartNode,
+    LandNode,
+}
+
 [ExecuteInEditMode]
 public class Node : MonoBehaviour, INode<Node>
 {
     [SerializeField] Transform nodeMarkerTransform;
-    [SerializeField] bool canMoveTo;
-    public bool CanMoveTo{
-        get => canMoveTo;
+    [SerializeField,ReadOnly] bool selectable;
+    public bool Selectable {
+        get => selectable;
         set
         {
-            canMoveTo = value;
+            selectable = value;
 
-            OnCanMoveToChanged?.Invoke(CanMoveTo);
+            OnSelectableChanged?.Invoke(Selectable);
         }
     }
 
+    [SerializeField] NodeTypes nodeType;
+    public NodeTypes NodeType {
+        get => nodeType;
+        set {
+            nodeType = value;
+            LoadNodeData();
+        }
+    }
 
-
-    [field: SerializeField] public NodeData NodeData { get; set; }
+    [SerializeField] NodeData nodeData;
+    public NodeData NodeData { 
+        get => nodeData;
+        set {
+            nodeData = value;
+            OnNodeDataChanged?.Invoke(NodeData);
+        } 
+    }
     [SerializeField] List<NodeBridge> nodeBridges;
 
     public List<Node> NextNodes => nodeBridges.Select(b => b.IsOutputOf(this, out Node other) ? other : null).Where(n=>n != null).ToList();
 
     // Events
-    public event Action<bool> OnCanMoveToChanged;
-
+    public event Action<bool> OnSelectableChanged;
+    public event Action<NodeData> OnNodeDataChanged;
 
     private void OnEnable()
     {
@@ -45,7 +65,9 @@ public class Node : MonoBehaviour, INode<Node>
 
         transform.hasChanged = false;
 
-        CanMoveTo = false;
+        Selectable = false;
+
+        LoadNodeData();
     }
 
     private void OnDisable()
@@ -54,10 +76,14 @@ public class Node : MonoBehaviour, INode<Node>
         NodeRegistry.Instance.OnRemovedNodeBridge -= OnRemovedNodeBridgeHandle;
     }
 
-
     private void OnDestroy()
     {
         NodeRegistry.Instance.RemoveNode(this);
+    }
+
+    void LoadNodeData()
+    {
+        NodeData = AssetDatabase.LoadAssetAtPath<NodeData>($"Assets/Resources/NodeDataSet/{NodeType}Data.asset");
     }
 
     public void AdjustAllNodeBridges()
@@ -86,6 +112,7 @@ public class Node : MonoBehaviour, INode<Node>
 
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(Node))]
 public class NodeEditor: Editor
 {
@@ -95,7 +122,12 @@ public class NodeEditor: Editor
 
         container.Add(BD_PropertyField.GetDefaultScriptRef(serializedObject));
 
-        var canMoveToPF = new PropertyField(serializedObject.FindProperty("canMoveTo"));
+        var nodeTypePF = new PropertyField(serializedObject.FindProperty("nodeType"));
+        nodeTypePF.RegisterValueChangeCallback(cb => {
+            Debug.Log($"{cb.changedProperty.enumNames[cb.changedProperty.enumValueIndex]}");
+            (target as Node).NodeType = (NodeTypes) cb.changedProperty.enumValueIndex;
+        });
+        var selectablePF = new PropertyField(serializedObject.FindProperty("selectable"));
 
         // Add next node [create nodePrefap and nodeBridgePrefab to sceneView, connent new node by setting on nodeBridge]
         var createOutputNodeBtn = new Button() { text = "Create Output Node" };
@@ -113,7 +145,8 @@ public class NodeEditor: Editor
         // List of bridges
         var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));
         //
-        container.Add(canMoveToPF);
+        container.Add(nodeTypePF);
+        container.Add(selectablePF);
         container.Add(createOutputNodeBtn);
         container.Add(nodeBridgesPF);
         return container;
@@ -154,3 +187,4 @@ public class NodeEditor: Editor
         }
     }
 }
+#endif

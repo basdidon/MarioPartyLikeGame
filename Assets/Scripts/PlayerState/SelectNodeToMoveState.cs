@@ -7,79 +7,47 @@ using UnityEngine.InputSystem;
 public class SelectNodeToMoveState : IState<Player>
 {
     public Player StateActor { get; }
-    int RollResult { get; }
     List<NodePath<Node>> NodePaths { get; set; }
 
     RaycastHit[] hits = new RaycastHit[100];
     Node focusNode;
 
-    bool IsAutoSelect { get; }
-    float AutoSelectDelay => 0.5f;
-    float timeElapsed;
-
-    public SelectNodeToMoveState(Player player, int rollResult)
+    public SelectNodeToMoveState(Player player,List<NodePath<Node>> nodePaths)
     {
         StateActor = player;
-        RollResult = rollResult;
-
-        NodePaths = PathFinder.FindPathByMove(StateActor.CurrentNode, RollResult).ToList();
-        IsAutoSelect = NodePaths.Count == 1;
+        NodePaths = nodePaths;
     }
 
     public void EnterState()
     {
-        NodePaths.ForEach(path => path.Last.CanMoveTo = true);
+        NodePaths.ForEach(path => path.Last.Selectable = true);
 
-        if (IsAutoSelect)
-        {
-            timeElapsed = 0;
-            focusNode = NodePaths[0].Last;
-        }
-        else
-        {
-            StateActor.InputProvider.ClickToMoveAction.performed += OnClick;
-        }
+        StateActor.InputProvider.ClickToMoveAction.performed += OnClick;
     }
+
 
     public void ExitState()
     {
         NodeRegistry.Instance.ResetCanMoveTo();
 
-        if (!IsAutoSelect)
-        {
-            StateActor.InputProvider.ClickToMoveAction.performed -= OnClick;
-        }
+        StateActor.InputProvider.ClickToMoveAction.performed -= OnClick;
     }
-    
+
     public void UpdateState()
     {
-        if (IsAutoSelect)
+        var screenPoint = StateActor.InputProvider.CursorPositionAction.ReadValue<Vector2>();
+        var camRay = Camera.main.ScreenPointToRay(screenPoint);
+
+        int hitsNum = Physics.RaycastNonAlloc(camRay.origin, camRay.direction, hits, 100);
+        if (hitsNum > 0 && hits.Take(hitsNum).Any(hit => hit.transform.CompareTag("Node")))
         {
-            if(timeElapsed >= AutoSelectDelay)
-            {
-                StateActor.State = new MoveState(StateActor, NodePaths.First(path => path.Last == focusNode).Nodes.GetEnumerator());
-            }
-            else
-            {
-                timeElapsed += Time.deltaTime;
-            }
+            var nodeTransfrom = hits.Where(hit => hit.transform.CompareTag("Node")).First().transform;
+            var node = nodeTransfrom.GetComponentInParent<Node>();
+            focusNode = node;
         }
         else
         {
-            var screenPoint = StateActor.InputProvider.CursorPositionAction.ReadValue<Vector2>();
-            var camRay = Camera.main.ScreenPointToRay(screenPoint);
-
-            int hitsNum = Physics.RaycastNonAlloc(camRay.origin, camRay.direction, hits, 100);
-            if (hitsNum > 0 && hits.Take(hitsNum).Any(hit => hit.transform.CompareTag("Node")))
-            {
-                var nodeTransfrom = hits.Where(hit => hit.transform.CompareTag("Node")).First().transform;
-                var node = nodeTransfrom.GetComponentInParent<Node>();
-                focusNode = node;
-            }
-            else
-            {
-                focusNode = null;
-            }
+            focusNode = null;
         }
     }
 
@@ -91,6 +59,46 @@ public class SelectNodeToMoveState : IState<Player>
             StateActor.State = new MoveState(StateActor, NodePaths.First(path => path.Last == focusNode).Nodes.GetEnumerator());
         }
     }
+}
 
-    
+public class AutoSelectNodeState : IState<Player>
+{
+    public Player StateActor { get; }
+    NodePath<Node> NodePath { get; set; }
+
+    Node focusNode;
+
+    float AutoSelectDelay => 0.5f;
+    float timeElapsed;
+
+    public AutoSelectNodeState(Player player,NodePath<Node> nodePath)
+    {
+        StateActor = player;
+
+        NodePath = nodePath;
+    }
+
+    public void EnterState()
+    {
+        timeElapsed = 0;
+        focusNode = NodePath.Last;
+        focusNode.Selectable = true;
+    }
+
+    public void ExitState()
+    {
+        NodeRegistry.Instance.ResetCanMoveTo();
+    }
+
+    public void UpdateState()
+    {
+        if (timeElapsed >= AutoSelectDelay)
+        {
+            StateActor.State = new MoveState(StateActor, NodePath.Nodes.GetEnumerator());
+        }
+        else
+        {
+            timeElapsed += Time.deltaTime;
+        }
+    }
 }

@@ -73,7 +73,7 @@ public class NodeRegistry : MonoBehaviour
     {
         foreach(var node in nodes)
         {
-            node.CanMoveTo = false;
+            node.Selectable = false;
         }
     }
 
