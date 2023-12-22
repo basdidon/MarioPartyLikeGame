@@ -1,4 +1,3 @@
-/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -6,41 +5,18 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Utils.UIElements
+namespace BD_Editor.Utils.UiElements
 {
-    public class Layout
+    public static class BD_PropertyField
     {
-        public static PropertyField GetDefaultScriptPropertyField(SerializedObject serializedObject)
+        public static PropertyField GetDefaultScriptRef(SerializedObject serializedObject)
         {
             var scriptPropertyField = new PropertyField(serializedObject.FindProperty("m_Script"));
             scriptPropertyField.SetEnabled(false);
             return scriptPropertyField;
         }
-        /*
-        public static ObjectField DrawDefaultScriptObjectField(UnityEngine.Object @object)
-        {
-            return DrawDefaultScriptObjectField("Script",@object);
-        }
 
-        public static ObjectField DrawDefaultScriptObjectField(string label,UnityEngine.Object @object)
-        {
-            var objField = new ObjectField(label)
-            {
-                value = @object,
-            };
-
-            objField.SetEnabled(false);
-
-            return objField;
-        }
-        
-        public static ObjectField DrawObjectField(string label)
-        {
-            var objField = new ObjectField(label);
-            return objField;
-        }
-
-        public static ListView DrawListview<T>(string title, List<T> sourceList, bool allowSceneObjects = true) where T : UnityEngine.Object
+        public static ListView GetListview<T>(string title, List<T> sourceList, bool allowSceneObjects = true) where T : UnityEngine.Object
         {
             var listView = new ListView(sourceList)
             {
@@ -70,4 +46,4 @@ namespace Utils.UIElements
             return listView;
         }
     }
-}*/
+}

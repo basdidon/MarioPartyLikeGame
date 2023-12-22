@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using BasDidon.Editor.UiElements;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Board/Node")]
 public class NodeData : ScriptableObject

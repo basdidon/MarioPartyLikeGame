@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Fusion;
-using UnityEngine.UIElements;
-using UnityEditor.UIElements;
-using BasDidon.PathFinder.NodeBase;
-using BasDidon.Editor.UiElements;
 using System.Linq;
 using System;
+using BasDidon.PathFinder.NodeBase;
 
 public enum NodeTypes
 {
@@ -83,7 +80,7 @@ public class Node : MonoBehaviour, INode<Node>
 
     void LoadNodeData()
     {
-        NodeData = AssetDatabase.LoadAssetAtPath<NodeData>($"Assets/Resources/NodeDataSet/{NodeType}Data.asset");
+        NodeData = Resources.Load<NodeData>($"Assets/Resources/NodeDataSet/{NodeType}Data.asset");
     }
 
     public void AdjustAllNodeBridges()
@@ -111,80 +108,3 @@ public class Node : MonoBehaviour, INode<Node>
     }
 
 }
-
-#if UNITY_EDITOR
-[CustomEditor(typeof(Node))]
-public class NodeEditor: Editor
-{
-    public override VisualElement CreateInspectorGUI()
-    {
-        var container = new VisualElement();
-
-        container.Add(BD_PropertyField.GetDefaultScriptRef(serializedObject));
-
-        var nodeTypePF = new PropertyField(serializedObject.FindProperty("nodeType"));
-        nodeTypePF.RegisterValueChangeCallback(cb => {
-            Debug.Log($"{cb.changedProperty.enumNames[cb.changedProperty.enumValueIndex]}");
-            (target as Node).NodeType = (NodeTypes) cb.changedProperty.enumValueIndex;
-        });
-        var selectablePF = new PropertyField(serializedObject.FindProperty("selectable"));
-
-        // Add next node [create nodePrefap and nodeBridgePrefab to sceneView, connent new node by setting on nodeBridge]
-        var createOutputNodeBtn = new Button() { text = "Create Output Node" };
-        createOutputNodeBtn.clicked += () =>
-        {
-            if (NodeRegistry.Instance == null)
-            {
-                Debug.LogWarning("NodeRegistry.Instance is null");
-                return;
-            }
-
-            NodeRegistry.Instance.CreateOutputNode(target as Node);
-        };
-
-        // List of bridges
-        var nodeBridgesPF = new PropertyField(serializedObject.FindProperty("nodeBridges"));
-        //
-        container.Add(nodeTypePF);
-        container.Add(selectablePF);
-        container.Add(createOutputNodeBtn);
-        container.Add(nodeBridgesPF);
-        return container;
-    }
-
-    private void OnSceneGUI()
-    {
-        Handles.color = Color.red;
-
-        if (target is Node node)
-        {   
-            var moveSnap = EditorSnapSettings.move;
-
-            var rightPos = node.transform.position + Vector3.right * moveSnap.x;
-            var leftPos = node.transform.position - Vector3.right * moveSnap.x;
-            var forwardPos = node.transform.position + Vector3.forward * moveSnap.z;
-            var backPos = node.transform.position - Vector3.forward * moveSnap.z;
-
-            DrawCreateNodeBtn(rightPos, node);
-            DrawCreateNodeBtn(leftPos, node);
-            DrawCreateNodeBtn(forwardPos, node);
-            DrawCreateNodeBtn(backPos, node);
-
-            if (Selection.activeGameObject == node.gameObject && node.transform.hasChanged)
-            {
-                node.AdjustAllNodeBridges();
-
-                node.transform.hasChanged = false;
-            }
-        }
-    }
-
-    void DrawCreateNodeBtn(Vector3 position,Node fromNode)
-    {
-        if (Handles.Button(position, Quaternion.identity, .2f, .2f, Handles.SphereHandleCap))
-        {
-            NodeRegistry.Instance.CreateOutputNode(position, fromNode);
-        }
-    }
-}
-#endif

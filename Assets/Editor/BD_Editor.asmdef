@@ -1,0 +1,18 @@
+{
+    "name": "BD_Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cec0fd518c4d4b741afaebb80b8460c9"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
